@@ -1,9 +1,72 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BlazorSbt.Data;
+namespace BlazorSbt.Shared.Data;
 
-public class DemoContext : DbContext
+public class DivisionContext : DbContext
 {
+    public DivisionContext(DbContextOptions<DivisionContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<BlazorSbt.Shared.Division> Divisions { get; set; } = default!;
+    //public DbSet<BlazorSbt.Shared.Schedules> Schedules { get; set; } = default!;
+    //public DbSet<BlazorSbt.Shared.Standings> Standings { get; set; } = default!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Division>()
+            .HasKey(d => new { d.Organization, d.Abbreviation });
+
+        modelBuilder.Entity<Standings>()
+            .HasKey(s => new { s.Organization, s.Abbreviation, s.TeamID });
+        modelBuilder.Entity<Schedule>()
+            .HasKey(s => new { s.Organization, s.Abbreviation, s.GameID });
+
+        modelBuilder.Entity<Division>().ToTable("SbtMultiDB_Division");
+        modelBuilder.Entity<Standings>().ToTable("SbtMultiDB_Standings");
+        modelBuilder.Entity<Schedule>().ToTable("SbtMultiDB_Schedule");
+    }
+
+    protected async Task<int> SaveChangesSqlCommonAsync(CancellationToken cancellationToken = default)
+    {
+        if (ChangeTracker.HasChanges())
+        {
+            var divisionsToDelete = new List<Division>();
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Deleted && entry.Entity is Division division)
+                {
+                    divisionsToDelete.Add(division);
+                }
+            }
+
+            foreach (var division in divisionsToDelete)
+            {
+                // Manually delete related Standings and Schedule.
+                var relatedStandings = Set<Standings>().Where(s => s.Organization == division.Organization && s.Abbreviation == division.Abbreviation);
+                var relatedSchedule = Set<Schedule>().Where(s => s.Organization == division.Organization && s.Abbreviation == division.Abbreviation);
+
+                Set<Standings>().RemoveRange(relatedStandings);
+                Set<Schedule>().RemoveRange(relatedSchedule);
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        return 0;
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await this.SaveChangesSqlCommonAsync(cancellationToken);
+    }
+
+
+    /*
     public record LoadScheduleResult
     {
         public bool Success { get; init; }
@@ -11,15 +74,6 @@ public class DemoContext : DbContext
         public DateTime FirstGameDate { get; init; }
         public DateTime LastGameDate { get; init; }
     };
-
-    public DemoContext(DbContextOptions<DemoContext> options)
-        : base(options)
-    {
-    }
-
-    public DbSet<BlazorSbt.Divisions> Divisions { get; set; } = default!;
-    public DbSet<BlazorSbt.Schedules> Schedules { get; set; } = default!;
-    public DbSet<BlazorSbt.Standings> Standings { get; set; } = default!;
 
     #region Data Access Layer Methods
     public async Task<LoadScheduleResult> LoadScheduleFileAsync(IFormFile scheduleFile, string organization, string divisionID, 
@@ -98,7 +152,7 @@ public class DemoContext : DbContext
                 teams.Add(lines[lineNumber].Trim());
 
                 // create standings row for each team
-                var standingsRow = new BlazorSbt.Standings
+                var standingsRow = new BlazorSbt.Shared.Standings
                 {
                     Organization = organization,
                     Wins = 0,
@@ -251,4 +305,5 @@ public class DemoContext : DbContext
         this.Schedules.Add(scheduleRow);
     }
     #endregion
+    */
 }

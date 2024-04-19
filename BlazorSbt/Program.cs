@@ -1,7 +1,5 @@
 using BlazorSbt.Components;
-using BlazorSbt.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace BlazorSbt;
 
@@ -25,16 +23,10 @@ public class Program
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
 
-        builder.Services.AddDbContextFactory<BlazorSbt.Shared.Data.DemoContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DemoContext")
-                //options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")
-                ?? throw new InvalidOperationException("Connection string 'DemoContext' not found.")));
-
-//        builder.Services.AddDbContext<BlazorSbt.Shared.Data.DemoContext>(options =>
-//            options.UseSqlServer(builder.Configuration.GetConnectionString("DemoContext") ?? throw new InvalidOperationException("Connection string 'DemoContext' not found.")));
-        //options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING") ?? throw new InvalidOperationException("Connection string 'DemoContext' not found.")));
-
-        //builder.Services.AddScoped<BlazorSbt.Shared.Data.DemoContext>();
+        builder.Services.AddDbContextFactory<BlazorSbt.Shared.Data.DivisionContext>(options =>
+            //options.UseSqlServer(builder.Configuration.GetConnectionString("Local_Sql_ConnectionString")
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Azure_Sql_ConnectionString")
+                ?? throw new InvalidOperationException("Connection string not found.")));
 
         builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -59,7 +51,7 @@ public class Program
         {
             var services = scope.ServiceProvider;
 
-            var context = services.GetRequiredService<BlazorSbt.Shared.Data.DemoContext>();
+            var context = services.GetRequiredService<BlazorSbt.Shared.Data.DivisionContext>();
             context.Database.EnsureCreated();
         }
 

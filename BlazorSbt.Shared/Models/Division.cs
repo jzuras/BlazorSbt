@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Radzen.Blazor;
 using System.ComponentModel.DataAnnotations;
 
 // Razor does not play well with nullable reference types,
@@ -12,10 +13,46 @@ using System.ComponentModel.DataAnnotations;
 // League = Fall Coed
 // Division = 1
 
-namespace BlazorSbt;
+namespace BlazorSbt.Shared;
 
+public class Division
+{
+    // Note: this domain object is also used directly as a view model,
+    // so display-centric attributes are included here.
+
+    [RegularExpression(@"^[a-zA-Z0-9]+[ a-zA-Z0-9-_]*$")]
+    public string Organization { get; set; } = string.Empty;
+
+    [Required]
+    //[Comment(Short string version used in URLs - must be unique within an Organization.")]
+    [RegularExpression(@"^[a-zA-Z]+[a-zA-Z0-9-_]*$", ErrorMessage = "Allowed: digits, letters, dash, and underline.")]
+    [StringLength(50, MinimumLength = 2)]
+    public string Abbreviation { get; set; } = string.Empty;
+
+    [Required]
+    [RegularExpression(@"^[a-zA-Z0-9]+[ a-zA-Z0-9-_]*$", ErrorMessage = "Allowed: digits, letters, dash, underline, and spaces.")]
+    public string League { get; set; } = string.Empty;
+
+    [Required]
+    [Display(Name = "Name")]
+    [RegularExpression(@"^[a-zA-Z0-9]+[ a-zA-Z0-9-_]*$", ErrorMessage = "Allowed: digits, letters, dash, underline, and spaces.")]
+    public string NameOrNumber { get; set; } = string.Empty;
+
+    [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy h:mm tt}", ApplyFormatInEditMode = false)]
+    public DateTime Updated { get; set; }
+
+    //[Comment("Locked is used to prevent scores from being reported.")]
+    public bool Locked { get; set; }
+
+    public List<Standings> Standings { get; set; } = new List<Standings>();
+
+    public List<Schedule> Schedule { get; set; } = new List<Schedule>();
+}
+
+
+// todo - delete me
 [PrimaryKey(nameof(Organization), nameof(ID))]
-public class Divisions
+public class Divisions2
 {
     [RegularExpression(@"^[a-zA-Z0-9]+[ a-zA-Z0-9-_]*$")] 
     public string Organization { get; set; } = string.Empty;

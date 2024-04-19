@@ -8,15 +8,14 @@
 
 namespace BlazorSbt.Shared;
 
-[PrimaryKey(nameof(Organization), nameof(Division), nameof(Name))]
+//[PrimaryKey(nameof(Organization), nameof(Division), nameof(Name))]
 public class Standings
 {
     public string Organization { get; set; } = string.Empty;
 
+    public string Abbreviation { get; set; } = string.Empty;
+    
     public short TeamID { get; set; }
-
-    [Comment("short string version used in URLs")]
-    public string Division { get; set; }
 
     public string Name { get; set; }
 

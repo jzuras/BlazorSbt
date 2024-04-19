@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 
-@inject IDbContextFactory<BlazorSbt.Shared.Data.DemoContext> DbFactory
+@inject IDbContextFactory<BlazorSbt.Shared.Data.DivisionContext> DbFactory
 
 Header Component Goes Here
 <!--
@@ -70,7 +70,15 @@ Header Component Goes Here
 
         //using var context = DbFactory.CreateDbContext();
         var context = DbFactory.CreateDbContext();
-        this.Standings = context.Standings.Where(s => s.Organization == Organization && s.Division == Id);//.AsQueryable();
+
+        this.Standings = context.Divisions
+            .Include(d => d.Standings)
+            .Where(d => d.Organization.ToLower() == this.Organization.ToLower()
+                && d.Abbreviation.ToLower() == this.Id.ToLower())
+            .SelectMany(d => d.Standings)
+            .AsQueryable();
+
+        //this.Standings = context.Standings.Where(s => s.Organization == Organization && s.Division == Id);//.AsQueryable();
     
         ShowOvertimeLosses = Organization?.ToLower().Contains("hockey") ?? false;
     }

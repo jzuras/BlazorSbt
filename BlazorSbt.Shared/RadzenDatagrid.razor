@@ -15,10 +15,10 @@
         }
     </InputSelect>
 
-    <RadzenDataGrid Data="@Schedules" TItem="BlazorSbt.Shared.Schedules" EmptyText="Loading..."
+    <RadzenDataGrid Data="@Schedules" TItem="BlazorSbt.Shared.Schedule" EmptyText="Loading..."
                     HeaderCellRender="@HeaderCellRender" GridLines="@GridLines">
         <Columns>
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" Property="Visitor"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" Property="Visitor"
                               Filterable="false" Title="Visitor" >
             <Template Context="game">
                 @if (game.Visitor.ToUpper().StartsWith("WEEK"))
@@ -33,9 +33,9 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" Property="VisitorScore"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" Property="VisitorScore"
                               Filterable="false" Title="Score" TextAlign="TextAlign.Center" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="Home" Title="Home" >
                 <Template Context="game">
                     <a @attributes="@GetLinkAttributes(game)">
@@ -43,19 +43,19 @@
                     </a>
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+            <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="HomeScore" Title="Score" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                                   Property="Day" Title="Date" FormatString="{0:MMM-dd}" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="Field" Title="Filed" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                                   Property="Time" Title="Time" FormatString="{0:h:mm tt}" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="MakeupDay" Title="Rescheduled" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="MakeupField" />
-        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedules" TextAlign="TextAlign.Center"
+        <RadzenDataGridColumn TItem="BlazorSbt.Shared.Schedule" TextAlign="TextAlign.Center"
                               Property="MakeupTime" />
         </Columns>
     </RadzenDataGrid>
