@@ -1,0 +1,58 @@
+﻿@page "/divisions/create"
+@inject BlazorSbt.Data.DemoContext DB
+@using BlazorSbt
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Divisions</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Divisions" OnValidSubmit="AddDivisions" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="league" class="form-label">League:</label> 
+                <InputText id="league" @bind-Value="Divisions.League" class="form-control" /> 
+                <ValidationMessage For="() => Divisions.League" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="division" class="form-label">Division:</label> 
+                <InputText id="division" @bind-Value="Divisions.Division" class="form-control" /> 
+                <ValidationMessage For="() => Divisions.Division" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="updated" class="form-label">Updated:</label> 
+                <InputDate id="updated" @bind-Value="Divisions.Updated" class="form-control" /> 
+                <ValidationMessage For="() => Divisions.Updated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="locked" class="form-label">Locked:</label> 
+                <InputCheckbox id="locked" @bind-Value="Divisions.Locked" class="form-check-input" /> 
+                <ValidationMessage For="() => Divisions.Locked" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/divisions">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Divisions Divisions { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddDivisions()
+    {
+        DB.Divisions.Add(Divisions);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/divisions");
+    }
+}

@@ -1,0 +1,46 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BlazorSbt2</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="demo softball">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Demo Softball
+            </NavLink>
+        </div>
+
+        @if (!disableDemoHockey)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="demo hockey">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Demo Hockey
+                </NavLink>
+            </div>
+        }
+        else
+        {
+            <div class="nav-item px-3">
+                <span class="nav-link disabled" aria-disabled="true">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Demo Hockey
+                </span>
+            </div>
+        }
+    </nav>
+</div>
+
+
+@code {
+    // temporary:
+    bool disableDemoHockey = true;
+}

@@ -1,0 +1,31 @@
+﻿@page "/{organization:nonfile}"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject BlazorSbt.Shared.Data.DemoContext DB
+@using BlazorSbt
+
+Header component tbd
+<!--
+<vc:Header sub-heading="Divisions" />
+-->
+
+
+<QuickGrid Class="table" Items="@DB.Divisions.Where(d => d.Organization == Organization)">
+    <!--
+            <PropertyColumn Property="divisions => divisions.League" />
+    <PropertyColumn Property="divisions => divisions.Division" />
+    <QuickGrid Items="@MyDbContext.Documents.Where(d => d.CategoryId == currentCategoryId)">
+        -->
+
+    <TemplateColumn Title="Division" Context="divisions">
+        @{
+            string standingsUrl = $"{divisions.Organization}/{divisions.ID}";
+        }
+        <a href="@standingsUrl">@divisions.League</a>
+        <a href="@standingsUrl">@divisions.Division</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    [Parameter]
+    public string Organization { get; set; } = "";
+}

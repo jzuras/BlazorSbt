@@ -1,0 +1,35 @@
+﻿::deep table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+::deep th {
+    background-color: darkblue !important;
+    color: white !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 5px !important;
+    border: 1px solid black !important;
+}
+
+    ::deep th:first-child {
+        text-align: left !important;
+    }
+
+::deep tr:nth-child(even) {
+    background-color: #f2f2f2 !important;
+}
+
+::deep td {
+    padding: 5px !important;
+    text-align: center !important;
+    border: 1px solid black !important;
+}
+
+::deep tr:nth-child(odd) td {
+    background-color: #e6e6e6 !important;
+}
+
+::deep td:first-child {
+    text-align: left !important;
+}

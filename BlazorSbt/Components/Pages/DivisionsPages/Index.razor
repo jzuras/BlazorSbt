@@ -1,0 +1,25 @@
+﻿@page "/divisions"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject BlazorSbt.Data.DemoContext DB
+@using BlazorSbt
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="divisions/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.Divisions">
+    <PropertyColumn Property="divisions => divisions.League" />
+    <PropertyColumn Property="divisions => divisions.Division" />
+    <PropertyColumn Property="divisions => divisions.Updated" />
+    <PropertyColumn Property="divisions => divisions.Locked" />
+
+    <TemplateColumn Context="divisions">
+        <a href="@($"divisions/edit?organization={divisions.Organization}")">Edit</a> |
+        <a href="@($"divisions/details?organization={divisions.Organization}")">Details</a> |
+        <a href="@($"divisions/delete?organization={divisions.Organization}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

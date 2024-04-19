@@ -1,0 +1,51 @@
+﻿@page "/divisions/details"
+@inject BlazorSbt.Data.DemoContext DB
+@using BlazorSbt
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Divisions</h4>
+    <hr />
+    @if (divisions is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">League</dt>
+            <dd class="col-sm-10">@divisions.League</dd>
+            <dt class="col-sm-2">Division</dt>
+            <dd class="col-sm-10">@divisions.Division</dd>
+            <dt class="col-sm-2">Updated</dt>
+            <dd class="col-sm-10">@divisions.Updated</dd>
+            <dt class="col-sm-2">Locked</dt>
+            <dd class="col-sm-10">@divisions.Locked</dd>
+        </dl>
+        <div>
+            <a href="@($"/divisions/edit?organization={divisions.Organization}")">Edit</a> |
+            <a href="@($"/divisions")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Divisions? divisions;
+
+    [SupplyParameterFromQuery]
+    public string Organization { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        divisions = await DB.Divisions.FirstOrDefaultAsync(m => m.Organization == Organization);
+
+        if (divisions is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
