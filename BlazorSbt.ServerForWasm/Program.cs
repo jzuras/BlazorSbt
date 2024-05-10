@@ -25,8 +25,9 @@ public class Program
 
         builder.Services.AddTransient<IDivisionRepository, DivisionEfCoreRepository>();
 
-        builder.Services.AddTransient<IDivisionService, DivisionService>();
-        
+        builder.Services.AddTransient<IDivisionService, DivisionServiceForWasm>();
+        builder.Services.AddHttpClient();
+
         builder.Services.AddTransient<IIsWasmProjectService, IsWasmProjectService>();
 
         builder.Services.AddQuickGridEntityFrameworkAdapter();
