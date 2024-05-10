@@ -7,8 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\Pages\StandingsList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\BlazorSbt - Web Deploy - Debug.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorSbt.Client\BlazorSbt.Client.csproj" />
     <ProjectReference Include="..\BlazorSbt.Shared\BlazorSbt.Shared.csproj" />
+    <PackageReference Include="Blazr.RenderState.Server" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />

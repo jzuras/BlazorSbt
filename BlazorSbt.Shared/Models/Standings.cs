@@ -6,7 +6,7 @@
 
 // Standings table handles the cumulative records for the teams.
 
-namespace BlazorSbt.Shared;
+namespace BlazorSbt.Shared.Models;
 
 //[PrimaryKey(nameof(Organization), nameof(Division), nameof(Name))]
 public class Standings

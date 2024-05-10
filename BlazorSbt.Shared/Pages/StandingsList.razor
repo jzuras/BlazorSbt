@@ -1,0 +1,107 @@
+﻿@page "/{organization:nonfile}"
+
+@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@inject NavigationManager NavigationManager
+@inject BlazorSbt.Shared.Services.IIsWasmProjectService IsWasmProjectService
+
+@using BlazorSbt
+@using BlazorSbt.Shared.Components
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using BlazorSbt.Shared.Components.Layout.DynamicHeader
+
+<DynamicHeaderComponent SubHeading="Standings" PartialTitle="Divisions" Organization="@Organization" />
+
+@if (IsWasmProjectService.IsWasmProject)
+{
+    <StandingsListComponent Organization="@Organization" />
+}
+else
+{
+    @if (this.IsHockey == false)
+    {
+        <StandingsListComponent Organization="@Organization" />
+    }
+    else
+    {
+        @if (base.RenderStateService.RenderState != Blazr.RenderState.BlazrRenderState.SSR)
+        {
+            <StandingsListComponent Organization="@Organization" @rendermode="@(new InteractiveWebAssemblyRenderMode(prerender: true))" />
+        }
+        else
+        {
+            <span>Loading...</span>
+        }
+    }
+}
+
+
+@code {
+    // note to self - keep here for future reference:
+    // More details on InteractiveServer vs WASM render modes:
+    // This page must be running as static on the server in order to use
+    // a WASM component. If it is running as InteractiveServer, attempting
+    // to run the component as InteractiveWebAssembly will throw
+    // a runtime error. (Using InteractiveAuto is not enough, as Auto does not force WASM.)
+    // The OnParametersSetAsync method is used to force a reload to make this page run as static,
+    // but only when needed (in concert with the code in App.Razor as well.)
+
+    // The component razor code above needs an IF statement to avoid rendering while
+    // in the wrong state, but only for "hockey" which is handled by this.UseWasm.
+    // For other leagues, rendering twice is handled by the component ("Loading...").
+
+    // Note - the Scores page uses a similar process, but
+    // since it always runs its component as WASM, the if-check is simpler.
+
+
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    // Note - I have two server projects. The WASM project uses InteractiveAuto mode,
+    // so this code just uses whatever mode we are already running in (WASM is not forced).
+    // For the original project, which may run in Static mode or InteractiveServer mode.
+    // Hockey leagues are forced into WASM mode. But we only have to worry about this
+    // in Interactive (Server) mode, as Static mode will allow a WASM component without complaint.
+
+    private bool IsHockey;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsWasmProjectService.IsWasmProject == false)
+        {
+            this.IsHockey = this.Organization.ToLower().Contains("hockey");
+
+            // hockey leagues will use WASM (just to show it is possible),
+            // but in order to set that render mode for the component, this
+            // page needs to run as static (see note above for how and why).
+            // If we are using Interactive Routing,
+            // check if we are running in the browser (SSR) and need
+            // to force a re-load to get static rendering to happen.
+            // note - this relies on the RenderModeForPage property in app.razor too.
+
+            // see this page to learn more:
+            // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-8.0#area-folder-of-static-ssr-components
+
+
+            if (BlazorSbt.Shared.FeatureFlags.UseInteractiveRouting)
+            {
+                if (this.IsHockey)
+                {
+                    if (this.RenderStateService.RenderState == Blazr.RenderState.BlazrRenderState.SSR)
+                    {
+                        NavigationManager.Refresh(forceReload: true);
+                    }
+                }
+                else
+                {
+                    if (this.RenderStateService.RenderState == Blazr.RenderState.BlazrRenderState.CSR)
+                    {
+                        NavigationManager.Refresh(forceReload: true);
+                    }
+                }
+            }
+        }
+
+        await base.OnParametersSetAsync();
+    }
+}

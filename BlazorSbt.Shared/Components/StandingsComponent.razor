@@ -1,0 +1,114 @@
+﻿@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@using BlazorSbt
+@using BlazorSbt.Shared.Models
+@using BlazorSbt.Shared.Models.Requests
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+
+@inject BlazorSbt.Shared.Services.IDivisionService Service
+
+@implements IDisposable
+
+<p style="color: red">(render state in Standings component is @base.RenderStateForDisplay)</p>
+
+<!--
+<div> is needed to wrap a child component to allow css isolation to work on it.
+    note that I had to use Align as the text-center css style did not work.
+    I had to use !important on padding in css file to override quickgrid's default theme.
+-->
+<div id="standings-component">
+     <div style="text-align:left;">
+        <span style="float:left;">League: &emsp;<b>@League</b></span>
+        <span style="float:right;" id="spanUpdated">Updated: &emsp;<b>@Updated</b></span>
+        <span style="display:block; text-align:center;">Division: &emsp;<b>@NameOrNumber</b></span>
+    </div>
+<QuickGrid Class="table" Items="@Standings" >
+    <PropertyColumn Property="standings => standings.Name" />
+    <PropertyColumn Property="standings => standings.Wins" Align="Align.Center" />
+    <PropertyColumn Property="standings => standings.Losses" Align="Align.Center" />
+    <PropertyColumn Property="standings => standings.Ties" Align="Align.Center" /> 
+    @if (ShowOvertimeLosses)
+    {
+        <PropertyColumn Property="standings => standings.OvertimeLosses" Align="Align.Center" Title="OT Losses" />
+    }
+    <PropertyColumn Property="standings => standings.Percentage" Format=".000" Align="Align.Center" Title="Pct" />
+    <PropertyColumn Property="standings => standings.GB" Align="Align.Center" />
+    <PropertyColumn Property="standings => standings.RunsScored" Align="Align.Center" Title="@RunsScored"/>
+    <PropertyColumn Property="standings => standings.RunsAgainst" Align="Align.Center" Title="@RunsAgainst"/>
+    <PropertyColumn Property="standings => standings.Forfeits" Align="Align.Center" />
+</QuickGrid>
+</div>
+
+@code {
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    private string League { get; set; } = "";
+    private string Updated { get; set; } = "";
+    private string NameOrNumber { get; set; } = "";
+
+    private bool ShowOvertimeLosses;
+    private string RunsAgainst = "";
+    private string RunsScored = "";
+
+    private IQueryable<Standings>? Standings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new GetDivisionRequest
+            {
+                Organization = this.Organization,
+                Abbreviation = this.Id
+            };
+
+        var response = await this.Service.GetDivision(request);
+
+        if (response.Success == false || response.Division == null)
+        {
+            this.Standings = new List<Standings>().AsQueryable();
+        }
+        else
+        {
+            this.Standings = response.Division.Standings
+            .OrderBy(s => s.GB).ThenByDescending(s => s.Percentage)
+            .AsQueryable();
+
+            this.League = response.Division.League;
+            this.NameOrNumber = response.Division.NameOrNumber;
+            this.Updated = response.Division.Updated.ToString("MM/dd/yyyy h:mm tt");
+        }
+
+        this.ShowOvertimeLosses = Organization?.ToLower().Contains("hockey") ?? false;
+        this.RunsScored = this.ShowOvertimeLosses ? "GS" : "RS";
+        this.RunsAgainst = this.ShowOvertimeLosses ? "GA" : "RA";
+
+        await base.OnInitializedAsync();
+    }
+
+    // note - this Dispose pattern below is overkill for use within this component,
+    // but could be useful when used within a Service in later versions.
+    private bool Disposed { get; set; } = false;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (this.Disposed)
+            return;
+
+        if (disposing)
+        {
+            //this.Context?.Dispose();
+        }
+
+        this.Disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+}

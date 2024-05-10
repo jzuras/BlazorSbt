@@ -1,0 +1,97 @@
+﻿@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@using BlazorSbt
+@using BlazorSbt.Shared.Models
+@using BlazorSbt.Shared.Models.Requests
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using System.ComponentModel
+@using Microsoft.AspNetCore.Components.Forms
+
+<p style="color: red">(render state in ScoresHeader component is @base.RenderStateForDisplay)</p>
+
+@if (HttpContext != null)
+{
+    <span>Loading...</span>
+}
+else
+{
+<p />
+<input type="hidden" asp-for="Organization" />
+    <input type="hidden" asp-for="Id" />
+
+    if(Model is not null && Model.Schedule is not null)
+    {
+        @if (Model.ErrorMessage != "")
+        {
+            <hr />
+            <div class="text-danger">
+                @Model.ErrorMessage
+            </div>
+            <hr />
+            <br />
+        }
+
+        <div>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    <!--
+                        Not a clean way to do this, but using it here for future reference...
+                        Original Razor code in MVC app was
+                            @Html.DisplayFor(model => model.Abbreviation) (Id in this case)
+                        instead use value of [DisplayName("<Display-Value-Goes-Here>")] parameter on property, 
+                            like below (which uses a custom component to do so):
+                    -->
+                    <NameLabelComponent For="() => Id" />
+                </dt>
+                <dd class="col-sm-10" id="divisionID">
+                    @Id
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Day
+                </dt>
+                <dd class="col-sm-10" id="day">
+                    @{
+                        var day = Model?.Schedule[0]?.Day;
+                        if (day.HasValue)
+                        {
+                            @day.Value.ToString("MMM-dd")
+                        }
+                    }
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm-2">
+                     <NameLabelComponent For="@(() => Model!.Schedule[0].Field)" />
+                </dt>
+                <dd class="col-sm-10" id="field">
+                    @Model?.Schedule[0]?.Field
+                </dd>
+            </dl>
+        </div>
+
+        <EditForm EditContext="EditFormContext" OnValidSubmit="OnValidSubmit" FormName="Scores" >
+            <AntiforgeryToken /> <!-- this may be automatically added for EditForms and not needed here. -->
+            <ObjectGraphDataAnnotationsValidator />
+            @{
+                var index = 0;
+
+                 foreach (var game in Model!.Schedule!)
+                {
+                    <ScoresSingleComponent Schedule="Model!.Schedule" index="index" />
+                    index++;
+                }
+            }
+
+            <div class="form-group">
+                <button type="submit" value="Save" class="btn btn-primary" id="saveButton">Save</button>
+            </div>
+        </EditForm>
+    }
+}
+
+@code {
+    // see code-behind file
+}

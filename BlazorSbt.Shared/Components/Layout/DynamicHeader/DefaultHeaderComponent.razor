@@ -1,0 +1,29 @@
+﻿<PageTitle>@PartialTitle @TitleAppendage</PageTitle>
+
+<h1 id="organizationHeader">@Organization</h1>
+<h4>@SubHeading</h4>
+<hr style="border: 2px solid black" />
+<p />
+
+@code {
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    [Parameter]
+    public string SubHeading { get; set; } = "";
+
+    [Parameter]
+    public string PartialTitle { get; set; } = "";
+
+    [Parameter]
+    public string TitleAppendage { get; set; } = "";
+
+    // not sure if I could do this in OnInit() instead
+    protected override async Task OnParametersSetAsync()
+    {
+        this.PartialTitle = (string.IsNullOrWhiteSpace(this.Organization) ? "" : (this.Organization + ": ")) +
+             this.PartialTitle;
+
+        await base.OnParametersSetAsync();
+    }
+}

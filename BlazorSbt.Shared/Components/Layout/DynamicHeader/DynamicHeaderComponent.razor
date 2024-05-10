@@ -1,0 +1,54 @@
+﻿@inject Blazr.RenderState.IBlazrRenderStateService RenderStateService
+
+<div style="color:red">(current render mode is @RenderStateService.RenderState)</div>
+<br />
+
+<DynamicComponent Type="@HeaderType" Parameters="Parameters" />
+
+@code {
+        // Note - this replaces the ViewComponent in the MVC version of Sbt.
+        // Not sure that DynamicComponent is the best way, but it was
+        // yet another feature to learn to use.
+        // Home page needs no Heading, so it supplies a component type to use.
+        // Any other pages can supply a type that does something unique if so desired.
+        // If no type is given, the default is used.
+        // Types that use this one do not have to supply all these params,
+        // BUT the type they supply MUST at least define these params.
+
+        [Parameter]
+        public string Organization { get; set; } = "";
+
+        [Parameter]
+        public string SubHeading { get; set; } = "";
+
+        [Parameter]
+        public string PartialTitle { get; set; } = "";
+
+        [Parameter]
+        public Type? HeaderType { get; set; }
+
+    private IDictionary<string, object> Parameters { get; set; } = default!;
+    private string TitleAppendage = " - SoftballTech";
+
+    public DynamicHeaderComponent()
+    {
+        Console.WriteLine("in ctor for dynamic header");
+    }
+
+    // not sure if I could do this in OnInit() instead
+    protected override async Task OnParametersSetAsync()
+    {
+        Console.WriteLine("in params set for dynamic header, render mode is " + RenderStateService.RenderState);
+        this.Parameters = new Dictionary<string, object>
+        {
+            { nameof(Organization), this.Organization },
+            { nameof(SubHeading), this.SubHeading },
+            { nameof(PartialTitle), this.PartialTitle },
+            { nameof(TitleAppendage), this.TitleAppendage }
+        };
+
+        this.HeaderType = ((this.HeaderType is null) ? typeof(DefaultHeaderComponent) : this.HeaderType);
+
+        await base.OnParametersSetAsync();
+    }
+}

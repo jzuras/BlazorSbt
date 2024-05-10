@@ -9,6 +9,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSbt.Client", "BlazorS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSbt.Shared", "BlazorSbt.Shared\BlazorSbt.Shared.csproj", "{41CB235A-16FE-473B-8F65-9E0F5B7F5D54}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Sbt.Api", "Blazor.Sbt.Api\Blazor.Sbt.Api.csproj", "{1CBF15CF-4D99-4425-89E8-90556702A74E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSbt.ServerForWasm", "BlazorSbt.ServerForWasm\BlazorSbt.ServerForWasm.csproj", "{F293E963-B170-477B-BBE0-2361F3383B94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSbt.ClientForWasm", "BlazorSbt.ClientForWasm\BlazorSbt.ClientForWasm.csproj", "{BFFBFC55-EE82-4F0A-9C6F-CB638FE3ACEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C2C388A-D450-4AA6-B476-4F7A9CCC92C2}"
+	ProjectSection(SolutionItems) = preProject
+		Notes-to-self-not-in-GH.txt = Notes-to-self-not-in-GH.txt
+		Notes-Production-TODO-items-not-in-GH.txt = Notes-Production-TODO-items-not-in-GH.txt
+		Notes-Validate Complex Objects -not in GH.txt = Notes-Validate Complex Objects -not in GH.txt
+		ReadMe - Blazor Auto Render Mode.md = ReadMe - Blazor Auto Render Mode.md
+		ReadMe - Blazor Render Modes.md = ReadMe - Blazor Render Modes.md
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +43,18 @@ Global
 		{41CB235A-16FE-473B-8F65-9E0F5B7F5D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41CB235A-16FE-473B-8F65-9E0F5B7F5D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41CB235A-16FE-473B-8F65-9E0F5B7F5D54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CBF15CF-4D99-4425-89E8-90556702A74E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CBF15CF-4D99-4425-89E8-90556702A74E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CBF15CF-4D99-4425-89E8-90556702A74E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CBF15CF-4D99-4425-89E8-90556702A74E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F293E963-B170-477B-BBE0-2361F3383B94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F293E963-B170-477B-BBE0-2361F3383B94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F293E963-B170-477B-BBE0-2361F3383B94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F293E963-B170-477B-BBE0-2361F3383B94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFFBFC55-EE82-4F0A-9C6F-CB638FE3ACEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFFBFC55-EE82-4F0A-9C6F-CB638FE3ACEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFFBFC55-EE82-4F0A-9C6F-CB638FE3ACEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFFBFC55-EE82-4F0A-9C6F-CB638FE3ACEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

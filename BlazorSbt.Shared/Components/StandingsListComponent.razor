@@ -1,0 +1,26 @@
+﻿@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+<p style="color: red">(render state in StandingsList component is @base.RenderStateForDisplay)</p>
+
+<table class="table-responsive">
+    <tbody>
+        @if(DivisionList is not null)
+        {
+            foreach (var item in DivisionList)
+            {
+                <tr>
+                    <td>
+                        @{
+                            string standingsUrl = $"{item.Organization}/{item.Abbreviation}";
+                        }
+                        <a href="@standingsUrl">@item.League @item.NameOrNumber (@item.Abbreviation)</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    // see code-behind file
+}

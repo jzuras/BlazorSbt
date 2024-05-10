@@ -1,0 +1,39 @@
+﻿@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@inject BlazorSbt.Shared.Services.IIsWasmProjectService IsWasmProjectService
+
+@page "/"
+
+@using BlazorSbt.Shared.Components.Layout.DynamicHeader
+
+<DynamicHeaderComponent HeaderType="@typeof(HomeHeaderComponent)" SubHeading="Home" PartialTitle="Home Page" />
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to the Blazor Version of SotballTech!</h1>
+    <h4>@DescribeRenderModeForProject</h4>
+    <br />
+    <p>Please select from the menu choices on the left to get started.</p>
+</div>
+
+@code{
+    public string DescribeRenderModeForProject { get; set; } = "";
+
+    protected override Task OnParametersSetAsync()
+    {
+        if (IsWasmProjectService.IsWasmProject)
+        {
+            this.DescribeRenderModeForProject = "Wasm Project using InteractiveAuto Rendering Mode.";
+        }
+        else
+        {
+#if DEBUG
+            this.DescribeRenderModeForProject = "Server Project using InteractiveServer Rendering Mode.";
+#else
+            this.DescribeRenderModeForProject = "Server Project using Static Rendering Mode.";
+    #endif
+        }
+
+        return base.OnParametersSetAsync();
+    }
+
+}

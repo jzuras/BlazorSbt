@@ -1,0 +1,56 @@
+﻿@page "/{organization}/{id:nonfile}/{teamName?}"
+@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@using BlazorSbt.Shared.Components
+@using BlazorSbt.Shared.Components.Layout.DynamicHeader
+
+<DynamicHeaderComponent SubHeading="Standings & Schedule" PartialTitle="@PartialTitle" Organization="@Organization" />
+
+<div id="standings-page">
+    <StandingsComponent Organization="@Organization" Id="@Id" />
+
+    <RadzenDatagrid Organization="@Organization" Id="@Id" TeamName="@TeamName" @rendermode="@InteractiveRenderMode" />
+</div>
+
+
+@code {
+    // note to self:
+    // we can have mulitple @page directives within this file,
+    // or we can use  @attribute [Route(Constants.PathForStandingsPage)]
+    // to avoid using strings directly
+
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    [Parameter]
+    public string TeamName { get; set; } = "";
+
+    private string PartialTitle { get; set; } = "";
+    private IComponentRenderMode? InteractiveRenderMode
+    {
+        // Schedule component (Radzen) must always run in an Interactive Mode
+        // so if pre-render, tell it to use I SSR, otherwise use current mode (null)
+
+        get
+        {
+            if (this.RenderStateService.IsPreRender)
+            {
+                return InteractiveServer;
+            }
+            else
+            {
+                return null; // use parent's render mode
+            }
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        this.PartialTitle = $"Standings: {this.Id}";
+
+        await base.OnParametersSetAsync();
+    }
+}

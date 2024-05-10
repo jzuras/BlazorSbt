@@ -1,0 +1,45 @@
+﻿@page "/{organization}/{id:nonfile}/{gameID:int}"
+
+@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@using BlazorSbt.Shared.Components
+@using BlazorSbt.Shared.Components.Layout.DynamicHeader
+
+@inject NavigationManager NavigationManager
+
+<DynamicHeaderComponent SubHeading="Report Scores (Client-Side)" PartialTitle="@PartialTitle" Organization="@Organization" />
+
+@if (base.RenderStateService.RenderState != Blazr.RenderState.BlazrRenderState.SSR)
+{
+    <ScoresHeaderComponent Organization="@Organization" Id="@Id" GameId="@GameId"
+                           @rendermode="@(new InteractiveWebAssemblyRenderMode(prerender: true))" />
+}
+
+@code {
+
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    [Parameter]
+    public int GameId { get; set; }
+
+    private string PartialTitle { get; set; } = "";
+
+    protected override Task OnParametersSetAsync()
+    {
+        // in order to set WASM render mode for the component, this
+        // page needs to run as static. For more info, see note in StandingsList.razor page.
+
+        if (this.RenderStateService.RenderState == Blazr.RenderState.BlazrRenderState.SSR)
+        {
+            NavigationManager.Refresh(forceReload: true);
+        }
+
+        this.PartialTitle = $"Report Scores: {this.Id}";
+
+        return base.OnParametersSetAsync();
+    }
+}

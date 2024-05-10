@@ -1,0 +1,56 @@
+﻿@inherits BlazorSbt.Shared.Components.ComponentBaseWithLogging
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<hr align="center" color="red" width="50%">
+
+<h4>Game #@(index + 1)</h4>
+
+<div class="form-group row mb-3">
+    <label asp-for="Schedule.Time" class="col-2 col-form-label fw-bold">Time</label>
+    <div class="col-2">
+        <label class="col-form-label">@((Schedule[index].Time != null) ? Schedule[index].Time?.ToString("h:mm tt") : "")</label>
+    </div>
+</div>
+
+<div class="form-group row mb-3">
+    <label for="Schedule.Home" class="col-2 col-form-label fw-bold">Home Team</label>
+    <div class="col-2">
+        <label for="Schedule[index].Home" class="col-form-label">@Schedule[index].Home</label>
+    </div>
+    <div class="col-2">
+        <InputNumber @bind-Value="Schedule[index].HomeScore" class="form-control"
+                     DisplayName="Home Score" autofocus aria-required="true" />
+    </div>
+    <div class="col-2 align-self-center">
+        <InputCheckbox class="form-check-input" @bind-Value="Schedule[index].HomeForfeit" id="chkHome"
+                       @bind-Value:after="HandleHomeCheckboxClicked" />
+        <label for="chkHome">Home Forfeit</label>
+    </div>
+    <div class="col-4">
+        <ValidationMessage For="() => Schedule[index].HomeScore" class="text-danger" />
+    </div>
+</div>
+
+<div class="form-group row mb-3">
+    <label for="Schedule.Visitor" class="col-2 col-form-label fw-bold">Visiting Team</label>
+    <div class="col-2">
+        <label for="Schedule.Visitor" class="col-form-label">@Schedule[index].Visitor</label>
+    </div>
+    <div class="col-2">
+        <InputNumber id="visitorScore" @bind-Value="Schedule[index].VisitorScore" class="form-control"
+                     DisplayName="Visitor Score" autofocus aria-required="true" />
+    </div>
+    <div class="col-2 ">
+        <InputCheckbox class="form-check-input" @bind-Value="Schedule[index].VisitorForfeit" id="chkHome"
+                       @bind-Value:after="HandleVisitorCheckboxClicked" />
+        <label for="chkHome">Visitor Forfeit</label>
+    </div>
+    <div class="col-4 align-self-center">
+        <ValidationMessage For="() => Schedule[index].VisitorScore" class="text-danger" />
+    </div>
+</div>
+
+@code {
+    // see code-behind
+}

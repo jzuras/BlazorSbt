@@ -1,0 +1,17 @@
+﻿<PageTitle>@PartialTitle @TitleAppendage</PageTitle>
+
+@code {
+    // Home Header only sets the the title
+
+    [Parameter]
+    public string Organization { get; set; } = "";
+
+    [Parameter]
+    public string SubHeading { get; set; } = "";
+
+    [Parameter]
+    public string PartialTitle { get; set; } = "";
+
+    [Parameter]
+    public string TitleAppendage { get; set; } = "";
+}

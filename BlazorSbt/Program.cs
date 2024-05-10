@@ -1,16 +1,10 @@
 using BlazorSbt.Components;
+using BlazorSbt.Shared.Data.Repositories;
+using BlazorSbt.Shared.Services;
 using Microsoft.EntityFrameworkCore;
+using Blazr.RenderState.Server;
 
 namespace BlazorSbt;
-
-// save this note until i can put it into draft...
-// when I added a css file for standings it looked like I caused a loss of all css loading,
-// but the problem was actually due to a change in the @page route - it started matching
-// for css files in wwwroot (considered top level for those files for some reason).
-// the fix was adding :nonfile to the end of org in standingslist.razor and id in standings.razor
-// what helped me figure out that this was happening was viewing page source then clicking on the
-// css file links and seeing that it loaded my standingslist page instead. finding a fix was
-// more difficult as this seems to be a new issue with v8 of Blazor and Chat could not help.
 
 public class Program
 {
@@ -23,16 +17,31 @@ public class Program
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
 
+        // Reminder - this (non-WASM) project will always deploy the Release Mode to Azure with static ssr, not interactive server mode.
+
         builder.Services.AddDbContextFactory<BlazorSbt.Shared.Data.DivisionContext>(options =>
             //options.UseSqlServer(builder.Configuration.GetConnectionString("Local_Sql_ConnectionString")
             options.UseSqlServer(builder.Configuration.GetConnectionString("Azure_Sql_ConnectionString")
                 ?? throw new InvalidOperationException("Connection string not found.")));
+
+        builder.Services.AddTransient<IDivisionRepository, DivisionEfCoreRepository>();
+
+        builder.Services.AddTransient<IDivisionService, DivisionService>();
+        
+        // these two lines can replace the one above to allow testing the Service from server-side:
+        //builder.Services.AddTransient<IDivisionService, DivisionServiceForWasm>();
+        //builder.Services.AddHttpClient();
+
+        builder.Services.AddTransient<IIsWasmProjectService, IsNotWasmProjectService>();
 
         builder.Services.AddQuickGridEntityFrameworkAdapter();
 
         // see RadzenDatagrid:OnInitializedAsync() for why this is needed:
         builder.Services.AddMemoryCache();
 
+        // may be able to remove adding httpclient call above at some point
+        builder.AddBlazrRenderStateServerServices();
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -63,7 +72,8 @@ public class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly)
+            .AddAdditionalAssemblies(typeof(Shared._Imports).Assembly);
 
         app.Run();
     }
